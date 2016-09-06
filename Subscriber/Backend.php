@@ -14,6 +14,7 @@ use Enlight\Event\SubscriberInterface;
 
 class Backend implements SubscriberInterface {
 
+
     /**
      * {@inheritdoc}
      */
