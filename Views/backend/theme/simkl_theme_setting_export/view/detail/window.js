@@ -38,7 +38,7 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.Window', {
             name: 'export-config-button',
             text: '{s name=export_config}Ex-/Import{/s}',
             handler: function () {
-                me.fireEvent('export-import-config', me.formPanel);
+                me.fireEvent('export-import-config', me.formPanel,me.theme,me.shop);
             }
         });
 

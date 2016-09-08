@@ -31,8 +31,10 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
      * event listener which gets called when the user clicks
      * on the "import/export" button in the theme configuration window
      * @param  formPanel    formPanel of the current theme
+     * @param  theme        the current theme being edited
+     * @param  shop         the current shop
      */
-    onExportImportConfig: function(formPanel) {
+    onExportImportConfig: function(formPanel,theme,shop) {
         var me = this,
             values = formPanel.getForm().getValues();
 
@@ -40,6 +42,8 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
         var exportWindow = Ext.create('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
             exportJson: Ext.JSON.encode(values),
             formPanel: formPanel,
+            theme: theme,
+            shop: shop
         }).show();
     },
 

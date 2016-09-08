@@ -17,14 +17,16 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
     alias: 'widget.theme-export-window',
     title : '{s name=exportWindowTitle}Export / Import{/s}',
     width: 480,
-    height: 250,
+    height: 305,
     layout:'fit',
-    exportJson: 'test',
     formPanel: null,
     modal: true,
     resizeable: false,
     minimizable: false,
     maximizable: false,
+
+    theme: null,
+    shop: null,
 
     initComponent: function() {
         var me = this;
@@ -41,14 +43,19 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
      */
     createItems: function() {
         var me = this;
-
-        return Ext.create('Ext.tab.Panel', {
-            layout:'fit',
+        return Ext.create('Ext.form.Panel', {
+            bodyPadding: 20,
+            layout: 'column',
+            defaults: {
+                bodyPadding: 4,
+                columnWidth: 1,
+            },
             items: [
-                me.createExportFieldset(),
-                me.createImportFieldset()
+                me.createImportFieldset(),
+                me.createExportFieldset()
             ]
         });
+
     },
 
     /**
@@ -58,37 +65,22 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
      */
     createExportFieldset: function() {
         var me = this;
-        return Ext.create('Ext.form.Panel', {
-            layout: 'fit',
-            title: '{s name=exportTitle}Export{/s}',
-            items: [
-                {
-                    xtype: 'fieldset',
-                    border: false,
-                    layout: {
-                        type: 'vbox',
-                        align : 'stretch'
-                    },
-                    items: [
-                        {
-                            xtype: 'label',
-                            text: '{s name=exportInfo}The following json string contains your current theme configuration. You can paste this json string into the import tab of another theme to copy your current theme configuration.{/s}',
-                            flex:1
-                        },
-                        {
-                            xtype: 'splitter',
-                        },
-                        {
-                            xtype: 'textarea',
-                            value: me.exportJson,
-                            fieldStyle: 'white-space: pre',
-                            flex:2,
-                            readOnly: true
-                        }
-                    ]
-                }
-            ],
 
+        return Ext.create('Ext.form.FieldSet', {
+            title: 'Export',
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                xtype: 'button',
+                text: 'download',
+                cls: 'primary',
+                handler: function() {
+                    var url = '{url controller="ThemeImportExport" action="export"}?theme=' + me.theme.getId() + '&shop=' + me.shop.getId();
+                    window.open(url);
+                }
+            }]
         });
     },
 
@@ -100,68 +92,42 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
      */
     createImportFieldset: function() {
         var me = this;
-        return Ext.create('Ext.form.Panel', {
-            layout: 'fit',
-            title: '{s name=importTitle}Import{/s}',
-            items: [
-                {
-                    xtype: 'fieldset',
-                    border: false,
-                    layout: {
-                        type: 'vbox',
-                        align : 'stretch'
-                    },
-                    items: [
-                        me.createImportField()
-                    ]
+        me.dropZone = Ext.create('Shopware.app.FileUpload', {
+            requestURL: '{url controller="ThemeImportExport" action="import"}',
+            padding: 0,
+            checkType: false,
+            maxAmount: 1,
+            showInput: true,
+            checkAmount: true,
+            enablePreviewImage: false,
+            dropZoneText: "Drop a theme configuration to import",
+            height: 110,
+            fileField: 'theme',
+            fileInputConfig: {
+                fieldLabel: 'theme configuration',
+                buttonText: 'Select',
+                labelStyle:'font-weight: 700',
+                labelWidth:125,
+                allowBlank:true,
+                width: 390,
+
+                buttonConfig: {
+                    cls: 'secondary small',
+                    iconCls: 'settings--theme-manager'
                 }
-            ],
-            bbar: [
-                { xtype: 'tbfill' },
-                me.createImportButton()
+            },
+        });
+        return Ext.create('Ext.form.FieldSet', {
+            title: 'Import',
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
+            items: [
+                me.dropZone
             ]
-
         });
-    },
-
-    /**
-     * Creates a textarea field used by createImportFieldset
-     * @return { Ext.form.field.TextArea }
-     */
-    createImportField: function() {
-        var me = this;
-
-        me.importField = Ext.create('Ext.form.field.TextArea', {
-            xtype: 'textarea',
-            value: '',
-            flex:1,
-            fieldStyle: 'white-space: pre',
-        });
-
-        return me.importField;
-    },
-
-    /**
-     * Creates an import button used by createImportFieldset
-     * @return { Ext.button.Button }
-     */
-    createImportButton: function () {
-        var me = this;
-
-        me.importButton = Ext.create('Ext.button.Button', {
-            cls: 'primary',
-            name: 'export-import-button',
-            text: '{s name=importConfig}Import{/s}',
-            handler: function () {
-                me.fireEvent(
-                    'import-config',
-                    me,
-                    me.formPanel,
-                    me.importField.getValue()
-                );
-            }
-        });
-        return me.importButton;
     }
+
 });
 //{/block}

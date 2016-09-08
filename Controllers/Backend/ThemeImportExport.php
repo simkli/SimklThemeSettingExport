@@ -8,13 +8,31 @@
  * @copyright  2015 Simon Klimek ( http://simonklimek.de )
  * @license    http://www.gnu.org/licenses/agpl-3.0.en.html GNU AFFERO GENERAL PUBLIC LICENSE
  */
+
+use Symfony\Component\HttpFoundation\FileBag,
+    Symfony\Component\HttpFoundation\File\Exception\FileException;
+
 class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controllers_Backend_ExtJs {
 
-	public function exportAction() {
-		$themeId = $this->Request()->get("theme");
+    const UPLOADED_CONFIG_FILENAME = 'simklithemesetting_upload.theme';
 
-        $service = $this->get("simklthemeimportexport.theme_import_export_service");
-        $em = $this->get("models");
+    /**
+     * @var \Shopware\SimklThemeSettingExport\Components\ThemeImportExportService
+     */
+    private $service = null;
+
+    private function getService() {
+        if ($this->service == null) {
+            $this->service = $this->get('simklthemeimportexport.theme_import_export_service');
+        }
+        return $this->service;
+    }
+
+	public function exportAction() {
+		$themeId = $this->Request()->get('theme');
+
+        $service = $this->getService();
+        $em = $this->get('models');
 
         $tplRepo = $em->getRepository('Shopware\Models\Shop\Template');
         $theme = $tplRepo->find($themeId);
@@ -42,5 +60,42 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         echo $content;
 
 	}
+
+    public function importAction() {
+        $this->View()->assign(
+            $this->handleUploadedConfig()
+        );
+    }
+
+    private function handleUploadedConfig() {
+        $cacheDir = $this->container->getParameter('kernel.cache_dir');
+        $fullpath = $cacheDir . DIRECTORY_SEPARATOR . $this::UPLOADED_CONFIG_FILENAME;
+        $service = $this->getService();
+        try {
+            $file = (new FileBag($_FILES))->get('theme');
+        } catch (InvalidArgumentException $e) {
+            return [ 'success' => false, 'message' => 'no configuration file uplaoded' ];
+        }
+        try {
+            $file->move($cacheDir, $this::UPLOADED_CONFIG_FILENAME);
+        } catch (FileException $e) {
+            return [
+                'success' => false,
+                'message' => 'Could not save file. ' . $e->getMessage()
+            ];
+        }
+        $config = unserialize(file_get_contents($fullpath));
+
+        if ($config === false) {
+            return ['success' => false, 'message' => 'illegal configuration uploaded'];
+        }
+
+        try {
+            // TODO Import configuration
+        } catch (InvalidArgumentException $e) {
+            return ['success' => false, 'message' => 'illegal configuration uploaded'];
+        }
+        return ['success' => true];
+    }
 
 }
