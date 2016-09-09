@@ -19,11 +19,13 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
 
         me.control({
             'theme-detail-window': {
-                'export-import-config': me.onExportImportConfig
+                'export-import-config': me.onOpenExportWindow
             },
             'theme-export-window': {
-                'import-config': me.onImportConfig
+                'export-theme-settings': me.onExportConfig
             }
+            // TODO 
+            // import handler
         });
     },
 
@@ -34,7 +36,7 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
      * @param  theme        the current theme being edited
      * @param  shop         the current shop
      */
-    onExportImportConfig: function(formPanel,theme,shop) {
+    onOpenExportWindow: function(formPanel,theme,shop) {
         var me = this,
             values = formPanel.getForm().getValues();
 
@@ -47,33 +49,44 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
         }).show();
     },
 
-    /**
-     * gets called when the user clicks on the import button of the
-     * export/window
-     * 
-     * @param  window       export/window instance
-     * @param  formPanel    formPanel of the current theme
-     * @param  values       String which shall be imported
-     */
-    onImportConfig: function(window, formPanel, values) {
-        var me = this;
-        try {
-            var values = Ext.JSON.decode(values);
-            formPanel.getForm().setValues(values);
-        } catch (exp) {
-            Shopware.Notification.createGrowlMessage(
-                '{s name="application"}Theme manager{/s}',
-                exp.message,
-                'Theme manager'
-            );
-            return;
-        }
-        Shopware.Notification.createGrowlMessage(
-            '{s name="application"}Theme manager{/s}',
-            '{s name="import_message"}Theme configuration imported{/s}',
-            'Theme manager'
+    
+    
+    onExportConfig: function(exportWindow, theme, shop) {
+        var me = this,
+            formPanel = me.getDetailWindow().formPanel;
+
+        Ext.Msg.confirm('{s name="ExportConfirmTitle"}Export{/s}', '{s name="ExportConfirmMessage"}If you have changed the configuration you need to save it before exporting. Do you want to save it now?{/s}', function(btnText){
+            if(btnText === "yes"){
+                me.saveConfigExport(theme,shop,formPanel);
+            }
+            else {
+                var url = '{url controller="ThemeImportExport" action="export"}?theme=' + theme.getId() + '&shop=' + shop.getId();
+                window.location.href=url;
+            }
+        }, me);
+        
+    },
+
+    saveConfigExport: function(theme, shop, formPanel) {
+        var me = this
+            url = '{url controller="ThemeImportExport" action="export"}?theme=' + theme.getId() + '&shop=' + shop.getId();
+                    
+        theme = me.updateShopValues(
+            theme,
+            shop,
+            formPanel.getForm().getFields(),
+            formPanel.getForm().getValues()
         );
-        window.destroy();
+        theme.save({
+            callback: function() {
+                Shopware.Notification.createGrowlMessage(
+                    '{s name="application"}Theme manager{/s}',
+                    '{s name="save_message"}Theme configuration saved{/s}',
+                    'Theme manager'
+                );
+                window.location.href=url;
+            }
+        });
     }
 
 });

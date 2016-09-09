@@ -74,11 +74,11 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
             },
             items: [{
                 xtype: 'button',
-                text: 'download',
+                text: '{s name="ExportFieldsetButton"}Download Configuration{/s}',
                 cls: 'primary',
                 handler: function() {
-                    var url = '{url controller="ThemeImportExport" action="export"}?theme=' + me.theme.getId() + '&shop=' + me.shop.getId();
-                    window.open(url);
+                    me.fireEvent('export-theme-settings',me,me.theme,me.shop);
+                    
                 }
             }]
         });
@@ -93,19 +93,19 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
     createImportFieldset: function() {
         var me = this;
         me.dropZone = Ext.create('Shopware.app.FileUpload', {
-            requestURL: '{url controller="ThemeImportExport" action="import"}',
+            requestURL: '{url controller="ThemeImportExport" action="import"}?theme=' + me.theme.getId() + '&shop=' + me.shop.getId(),
             padding: 0,
             checkType: false,
             maxAmount: 1,
             showInput: true,
             checkAmount: true,
             enablePreviewImage: false,
-            dropZoneText: "Drop a theme configuration to import",
+            dropZoneText: '{s name="ImportFieldsetDropzoneLabel"}Drop a theme configuration for importing{/s}',
             height: 110,
             fileField: 'theme',
             fileInputConfig: {
-                fieldLabel: 'theme configuration',
-                buttonText: 'Select',
+                fieldLabel: '{s name="ImportFieldsetLabel"}Theme Configuration{/s}',
+                buttonText: '{s name="ImportFieldsetButton"}Select{/s}',
                 labelStyle:'font-weight: 700',
                 labelWidth:125,
                 allowBlank:true,

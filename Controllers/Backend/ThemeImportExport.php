@@ -28,21 +28,34 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         return $this->service;
     }
 
+    private function getThemeById($themeId) {
+        $em = $this->get('models');
+        $tplRepo = $em->getRepository('Shopware\Models\Shop\Template');
+        return  $tplRepo->find($themeId);
+    }
+
+    private function getShopById($shopId) {
+        $em = $this->get('models');
+        $shopRepo = $em->getRepository('Shopware\Models\Shop\Shop');
+        return $shopRepo->find($shopId);
+    }
+
 	public function exportAction() {
-		$themeId = $this->Request()->get('theme');
+		$theme = $this->getThemeById($this->Request()->get('theme'));
+        $shop = $this->getShopById($this->Request()->get('shop'));
+
+        if ($theme == null || $shop == null) {
+            $this->View()->assign([
+                'success' => false, 'message' => 'parameter missing'
+            ]);
+            return;
+        }
 
         $service = $this->getService();
-        $em = $this->get('models');
 
-        $tplRepo = $em->getRepository('Shopware\Models\Shop\Template');
-        $theme = $tplRepo->find($themeId);
-        $shopRepo = $em->getRepository('Shopware\Models\Shop\Shop');
-        $shop = $shopRepo->find(1);
-        $settings = $service->getThemeSettingsArray(
-            $theme,
-            $shop
-        );
+        $settings = $service->getThemeSettingsArray($theme,$shop);
 
+        // provide theme settings as file
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $this->Front()->Plugins()->Json()->setRenderer(false);
 
@@ -62,15 +75,22 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
 	}
 
     public function importAction() {
+        $theme = $this->getThemeById($this->Request()->get('theme'));
+        $shop = $this->getShopById($this->Request()->get('shop'));
         $this->View()->assign(
-            $this->handleUploadedConfig()
+            $this->handleUploadedConfig($theme,$shop)
         );
     }
 
-    private function handleUploadedConfig() {
+    private function handleUploadedConfig($theme,$shop) {
         $cacheDir = $this->container->getParameter('kernel.cache_dir');
         $fullpath = $cacheDir . DIRECTORY_SEPARATOR . $this::UPLOADED_CONFIG_FILENAME;
         $service = $this->getService();
+
+        if ($theme == null || $shop == null) {
+            return [ 'success' => false, 'message' => 'parameters missing'];
+        }
+
         try {
             $file = (new FileBag($_FILES))->get('theme');
         } catch (InvalidArgumentException $e) {
@@ -90,11 +110,7 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
             return ['success' => false, 'message' => 'illegal configuration uploaded'];
         }
 
-        try {
-            // TODO Import configuration
-        } catch (InvalidArgumentException $e) {
-            return ['success' => false, 'message' => 'illegal configuration uploaded'];
-        }
+        $service->setThemeSettingsArray($theme, $shop, $config);
         return ['success' => true];
     }
 

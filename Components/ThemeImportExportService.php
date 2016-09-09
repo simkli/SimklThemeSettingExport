@@ -11,6 +11,12 @@
 
 namespace Shopware\SimklThemeSettingExport\Components;
 
+use \Doctrine\Common\Collections\Collection,
+    Shopware\Models\Shop\Shop,
+    Shopware\Models\Shop\Template,
+    Shopware\Models\Shop\TemplateConfig\Element,
+    Shopware\Models\Shop\TemplateConfig\Value;
+
 class ThemeImportExportService {
 
     private $em = null;
@@ -19,7 +25,7 @@ class ThemeImportExportService {
         $this->em = $em;
     }
 
-    public function getThemeSettingsArray($theme,$shop) {
+    public function getThemeSettingsArray(Template $theme, Shop $shop) {
         $settings = $this->getThemeArray($theme,$shop);
 
         if ($settings === null) return null;
@@ -36,7 +42,12 @@ class ThemeImportExportService {
         return $return;
     }
 
-    public function getThemeArray($theme,$shop) {
+    /**
+     * @param  Template $theme [description]
+     * @param  Shop     $shop  [description]
+     * @return [type]          [description]
+     */
+    public function getThemeArray(Template $theme, Shop $shop) {
         $repository = $this->em->getRepository('Shopware\Models\Shop\Template');
         $quB = $repository->createQueryBuilder('template');
 
@@ -53,17 +64,61 @@ class ThemeImportExportService {
     }
 
     /**
-     * TODO
+     * 
+     * @param Template $theme    [description]
+     * @param Shop     $shop     [description]
+     * @param array    $settings [description]
      */
-    public function setThemeSettingsArray($theme,$shop,$settings) {
+    public function setThemeSettingsArray(Template $theme, Shop $shop, array $settings) {
+        $elements = $theme->getElements();
+        $elements = $this->buildKeyValueSettings($elements);
 
+        foreach ($settings as $key => $value) {
+            if (!isset($elements[$key])){
+                continue;
+            }
+            $element = $elements[$key];
+            $valueEntity = $this->getValueForShop($element, $shop);
+            $valueEntity->setValue($value);
+
+        }
+  
+        $this->em->flush();
+    }
+
+
+    /**
+     * Helper function to speed up element look up.
+     * We need to iterate the collection just once
+     * @param  Collection $collection theme setting elements
+     * @param Shop 
+     * @return array    element_name => element array
+     */
+    private function buildKeyValueSettings(Collection $collection, Shop $shop) {
+        $return = [];
+        foreach ($collection as $element) {
+            $return[$element->getName()] = $element;
+        }
+        return $return;
     }
 
     /**
-     * TODO
+     * gets a subshop specific value of a settings element
+     * @param  Element $element 
+     * @param  Shop    $shop    
+     * @return Value           
      */
-    public function setThemeSetting($theme,$name,$value,$shop = null) {
-
+    private function getValueForShop(Element $element, Shop $shop) {
+        foreach ($element->getValues() as $value) {
+            if ($value->getShop() == $shop) {
+                return $value;
+            }
+        }
+        $newVal = new Value();
+        $newVal->setShop($shop);
+        $newVal->setElement($element);
+        $newVal->setValue($element->getValue());
+        return $newVal;
     }
 
 }

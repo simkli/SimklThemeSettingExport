@@ -101,12 +101,17 @@ class Shopware_Plugins_Backend_SimklThemeSettingExport_Bootstrap extends Shopwar
      * adds the event subscribers
      * @param  Enlight_Event_EventArgs $args event args
      */
-    public function onStartFrontDispatch(Enlight_Event_EventArgs $arguments) {
+    public function onStartFrontDispatch(\Enlight_Event_EventArgs $arguments) {
         $this->Application()->Snippets()->addConfigDir(__DIR__ . '/Snippets/');
         $this->Application()->Events()->addSubscriber(new Backend());
     }
 
     public function onThemeImportExportService() {
         return new ThemeImportExportService($this->get('models'));
+    }
+
+    // TODO Import / Export Commands
+    public function onAddConsoleCommand(\Enlight_Event_EventArgs $arguments) {
+        return [];
     }
 }

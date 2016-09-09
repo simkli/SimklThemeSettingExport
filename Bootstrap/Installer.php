@@ -52,6 +52,11 @@ class Installer {
             'Enlight_Bootstrap_InitResource_simklthemeimportexport.theme_import_export_service', 
             'onThemeImportExportService'
         );
+
+        $this->bootstrap->subscribeEvent(
+            'Shopware_Console_Add_Command', 
+            'onAddConsoleCommand'
+        );
     }
 
     private function registerController() {
