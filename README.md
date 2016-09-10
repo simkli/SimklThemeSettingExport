@@ -13,8 +13,34 @@ git clone https://github.com/simkli/SimklThemeSettingExport.git
 2) Log in to your Shopware backend and activate the plugin in the Shopware Plugin Manager.
 
 ## Usage
-You'll find a new button in the theme configuration menu called "Ex/Import". This will open a new window containing a json string of your current theme configuration. You can copy&past this string to any other theme installed to inherit the current configuration.
+### Shopware Backend
+This plugins extends the Shopware Theme Manager and allows you to export and import
+configuration of themes.
+![Image](http://i.imgur.com/YVy4qhQ.jpg)
 
-![Image](https://dl.dropboxusercontent.com/u/2419584/things/themeplugin.png)
+### Via Commandline
+Using the Shopware CLI you can easily import or export configurations. This can be useful
+for deployment. Following commands are available:
+`$ ./bin/console sw:theme:export:configuration <theme> <shop>`
+`$ ./bin/console sw:theme:import:configuration <theme> <shop>`
+You can use the ID or name of the shop/theme as argument.
+#### Example Import
+`$ ./bin/console sw:theme:import:configuration Responsive English < my_config.theme`
+
+### For Developers
+If you're plaing on releasing a theme you can use this plugin to import a example 
+configuration for your customers. For example in your plugin's bootstrap:
+
+```php
+if ($this->assertRequiredPluginsPresent(['SimklThemeSettingExport']) {
+    $service = $this->get('simklthemeimportexport.theme_import_export_service');
+    $service->setThemeSettingsArray($yourThemeModel, $shop, [
+        'brand-primary' => '#FFF',
+        'brand-secondary' => '#000'
+        // ...
+    ]);
+}
+```
+
 ## License
 This plugin is distributed under the GNU Affero General Public License v3.

@@ -24,7 +24,8 @@ abstract class Command extends ShopwareCommand {
      */
     protected function getService() {
         if ($this->service == null) {
-            $this->service = $this->container->get('simklthemeimportexport.theme_import_export_service');
+            $this->service = $this->container->get(
+                'simklthemeimportexport.theme_import_export_service');
         }
         return $this->service;
     }
