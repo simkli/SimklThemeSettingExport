@@ -37,7 +37,7 @@ class Updater {
         $this->updateEventSubscribers();
         $this->updateConfiguration();
 
-        return true;
+        return ['success' => true, 'invalidateCache' => ['backend']];  
     }   
 
     /**
@@ -50,7 +50,7 @@ class Updater {
     }
 
     private function updateEventSubscribers() {
-        if (version_compare($this->oldVersion, '1.0.1', '<=')) {
+        if (version_compare($this->oldVersion, '1.0.0', '<=')) {
             $this->bootstrap->subscribeEvent(
                 'Enlight_Bootstrap_InitResource_simklthemeimportexport.theme_import_export_service', 
                 'onThemeImportExportService'
@@ -63,7 +63,7 @@ class Updater {
     }
 
     private function updateConfiguration() {
-        if (version_compare($this->oldVersion, '1.0.2', '<=')) {
+        if (version_compare($this->oldVersion, '1.0.0', '<=')) {
             $form = $this->bootstrap->Form();
             $form->setElement('text','themeexport_filename',[
                 'label' => 'Export Filename',

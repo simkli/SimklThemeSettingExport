@@ -21,6 +21,9 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
      */
     private $service = null;
 
+    /**
+     * @return \Shopware\SimklThemeSettingExport\Components\ThemeImportExportService
+     */
     private function getService() {
         if ($this->service == null) {
             $this->service = $this->get('simklthemeimportexport.theme_import_export_service');
@@ -28,6 +31,10 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         return $this->service;
     }
 
+    /**
+     * @param  int $themeId 
+     * @return \Shopware\Models\Shop\Template
+     */
     private function getThemeById($themeId) {
         if (empty($themeId)) return null;
         $em = $this->get('models');
@@ -35,6 +42,10 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         return  $tplRepo->find($themeId);
     }
 
+    /**
+     * @param  int $shopId     
+     * @return \Shopware\Models\Shop\Shop 
+     */
     private function getShopById($shopId) {
         if (empty($shopId)) return null;
         $em = $this->get('models');
@@ -42,6 +53,9 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         return $shopRepo->find($shopId);
     }
 
+    /**
+     * export endpoint
+     */
 	public function exportAction() {
 		$theme = $this->getThemeById($this->Request()->get('theme'));
         $shop = $this->getShopById($this->Request()->get('shop'));
@@ -83,6 +97,9 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
 
 	}
 
+    /**
+     * import endpoint
+     */
     public function importAction() {
         $theme = $this->getThemeById($this->Request()->get('theme'));
         $shop = $this->getShopById($this->Request()->get('shop'));
@@ -91,6 +108,12 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         );
     }
 
+    /**
+     * check if the uploaded config is valid
+     * @param  mixed $theme 
+     * @param  mixed $shop  
+     * @return mixed        success
+     */
     private function handleUploadedConfig($theme,$shop) {
         $cacheDir = $this->container->getParameter('kernel.cache_dir');
         $fullpath = $cacheDir . DIRECTORY_SEPARATOR . $this::UPLOADED_CONFIG_FILENAME;

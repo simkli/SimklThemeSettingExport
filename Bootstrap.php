@@ -18,7 +18,7 @@ use Shopware\SimklThemeSettingExport\Bootstrap\Installer,
 
 class Shopware_Plugins_Backend_SimklThemeSettingExport_Bootstrap extends Shopware_Components_Plugin_Bootstrap {
 
-    const VERSION = '1.0.2';
+    const VERSION = '1.1.0';
 
     /**
      * {@inheritdoc}
@@ -113,7 +113,7 @@ class Shopware_Plugins_Backend_SimklThemeSettingExport_Bootstrap extends Shopwar
         return new ThemeImportExportService($this->get('models'));
     }
 
-    // TODO Import / Export Commands
+
     public function onAddConsoleCommand(\Enlight_Event_EventArgs $arguments) {
         return new ArrayCollection([
             new ThemeImportConfigurationCommand(),

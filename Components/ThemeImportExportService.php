@@ -25,6 +25,12 @@ class ThemeImportExportService {
         $this->em = $em;
     }
 
+    /**
+     * returns a theme setting configuration as key value array
+     * @param  Template $theme 
+     * @param  Shop     $shop  
+     * @return mixed    setting_name => value          
+     */
     public function getThemeSettingsArray(Template $theme, Shop $shop) {
         $settings = $this->getThemeArray($theme,$shop);
 
@@ -43,9 +49,10 @@ class ThemeImportExportService {
     }
 
     /**
-     * @param  Template $theme [description]
-     * @param  Shop     $shop  [description]
-     * @return [type]          [description]
+     * returns an array containing the theme and it's setting elements
+     * @param  Template $theme 
+     * @param  Shop     $shop  
+     * @return mixed          
      */
     public function getThemeArray(Template $theme, Shop $shop) {
         $repository = $this->em->getRepository('Shopware\Models\Shop\Template');
@@ -64,10 +71,10 @@ class ThemeImportExportService {
     }
 
     /**
-     * 
-     * @param Template $theme    [description]
-     * @param Shop     $shop     [description]
-     * @param array    $settings [description]
+     * sets the theme settings for a specific theme
+     * @param Template $theme    
+     * @param Shop     $shop     
+     * @param array    $settings key value array containing the settings
      */
     public function setThemeSettingsArray(Template $theme, Shop $shop, array $settings) {
         $elements = $theme->getElements();
@@ -117,7 +124,8 @@ class ThemeImportExportService {
         $newVal = new Value();
         $newVal->setShop($shop);
         $newVal->setElement($element);
-        $newVal->setValue($element->getValue());
+        $newVal->setValue($element->getDefaultValue());
+        $this->em->persist($newVal);
         return $newVal;
     }
 

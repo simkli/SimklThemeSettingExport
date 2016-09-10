@@ -33,7 +33,7 @@ class Installer {
         $this->registerController();
         $this->createConfiguration();
 
-        return true;    
+        return ['success' => true, 'invalidateCache' => ['backend']];    
     }
 
     /**
@@ -64,6 +64,9 @@ class Installer {
         $this->bootstrap->registerController('Backend', 'ThemeImportExport');
     }
 
+    /**
+     * creates the backend form and adds translations
+     */
     private function createConfiguration() {
         $form = $this->bootstrap->Form();
         $form->setElement('text','themeexport_filename',[

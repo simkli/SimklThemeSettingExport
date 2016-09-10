@@ -19,7 +19,6 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
     width: 480,
     height: 305,
     layout:'fit',
-    formPanel: null,
     modal: true,
     resizeable: false,
     minimizable: false,
@@ -67,14 +66,14 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
         var me = this;
 
         return Ext.create('Ext.form.FieldSet', {
-            title: 'Export',
+            title: '{s name="exportTitle"}Export{/s}',
             layout: 'anchor',
             defaults: {
                 anchor: '100%'
             },
             items: [{
                 xtype: 'button',
-                text: '{s name="ExportFieldsetButton"}Download Configuration{/s}',
+                text: '{s name="exportFieldsetButton"}Download Configuration{/s}',
                 cls: 'primary',
                 handler: function() {
                     me.fireEvent('export-theme-settings',me,me.theme,me.shop);
@@ -104,8 +103,8 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
             height: 110,
             fileField: 'theme',
             fileInputConfig: {
-                fieldLabel: '{s name="ImportFieldsetLabel"}Theme Configuration{/s}',
-                buttonText: '{s name="ImportFieldsetButton"}Select{/s}',
+                fieldLabel: '{s name="importFieldsetLabel"}Theme Configuration{/s}',
+                buttonText: '{s name="importFieldsetButton"}Select{/s}',
                 labelStyle:'font-weight: 700',
                 labelWidth:125,
                 allowBlank:true,
@@ -118,7 +117,7 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
             },
         });
         return Ext.create('Ext.form.FieldSet', {
-            title: 'Import',
+            title: '{s name="importTitle"}Import{/s}',
             layout: 'anchor',
             defaults: {
                 anchor: '100%'
