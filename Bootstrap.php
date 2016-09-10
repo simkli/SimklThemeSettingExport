@@ -11,7 +11,10 @@
 use Shopware\SimklThemeSettingExport\Bootstrap\Installer,
     Shopware\SimklThemeSettingExport\Bootstrap\Updater,
     Shopware\SimklThemeSettingExport\Components\ThemeImportExportService,
-    Shopware\SimklThemeSettingExport\Subscriber\Backend;
+    Shopware\SimklThemeSettingExport\Subscriber\Backend,
+    Shopware\SimklThemeSettingExport\Commands\ThemeImportConfigurationCommand,
+    Shopware\SimklThemeSettingExport\Commands\ThemeExportConfigurationCommand,
+    Doctrine\Common\Collections\ArrayCollection;
 
 class Shopware_Plugins_Backend_SimklThemeSettingExport_Bootstrap extends Shopware_Components_Plugin_Bootstrap {
 
@@ -112,6 +115,9 @@ class Shopware_Plugins_Backend_SimklThemeSettingExport_Bootstrap extends Shopwar
 
     // TODO Import / Export Commands
     public function onAddConsoleCommand(\Enlight_Event_EventArgs $arguments) {
-        return [];
+        return new ArrayCollection([
+            new ThemeImportConfigurationCommand(),
+            new ThemeExportConfigurationCommand()
+        ]);
     }
 }

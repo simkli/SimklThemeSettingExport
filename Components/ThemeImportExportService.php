@@ -94,7 +94,7 @@ class ThemeImportExportService {
      * @param Shop 
      * @return array    element_name => element array
      */
-    private function buildKeyValueSettings(Collection $collection, Shop $shop) {
+    private function buildKeyValueSettings(Collection $collection) {
         $return = [];
         foreach ($collection as $element) {
             $return[$element->getName()] = $element;

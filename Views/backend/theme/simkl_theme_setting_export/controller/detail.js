@@ -60,17 +60,15 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
                 me.saveConfigExport(theme,shop,formPanel);
             }
             else {
-                var url = '{url controller="ThemeImportExport" action="export"}?theme=' + theme.getId() + '&shop=' + shop.getId();
-                window.location.href=url;
+                me.downloadExport();   
             }
         }, me);
         
     },
 
     saveConfigExport: function(theme, shop, formPanel) {
-        var me = this
-            url = '{url controller="ThemeImportExport" action="export"}?theme=' + theme.getId() + '&shop=' + shop.getId();
-                    
+        var me = this;
+                            
         theme = me.updateShopValues(
             theme,
             shop,
@@ -84,9 +82,14 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
                     '{s name="save_message"}Theme configuration saved{/s}',
                     'Theme manager'
                 );
-                window.location.href=url;
+                me.downloadExport();
             }
         });
+    },
+
+    downloadExport: function(theme,shop) {
+        var url = '{url controller="ThemeImportExport" action="export"}?theme=' + theme.getId() + '&shop=' + shop.getId();
+        window.location.href=url;
     }
 
 });
