@@ -31,6 +31,7 @@ class Installer {
     public function install() {
         $this->registerEvents();
         $this->registerController();
+        $this->createConfiguration();
 
         return true;    
     }
@@ -61,5 +62,30 @@ class Installer {
 
     private function registerController() {
         $this->bootstrap->registerController('Backend', 'ThemeImportExport');
+    }
+
+    private function createConfiguration() {
+        $form = $this->bootstrap->Form();
+        $form->setElement('text','themeexport_filename',[
+            'label' => 'Export Filename',
+            'value' => '%1$s-%2$s-%3$s-%4$s.theme',
+            'description' =>    'Filename for exported theme configurations. Parameters:<br>
+                                %1$s - theme name<br>
+                                %2$s - shop name<br>
+                                %3$s - date<br>
+                                %4$s - time'
+        ]);
+        $this->bootstrap->addFormTranslations([
+            'de_DE' => [
+                'themeexport_filename' => [
+                    'label' => 'Export Dateiname',
+                    'description' => 'Export-Dateiname. Parameter:<br>
+                                        %1$s - Name der Theme<br>
+                                        %2$s - Name des Shops<br>
+                                        %3$s - Datum<br>
+                                        %4$s - Uhrzeit'
+                ]
+            ]
+        ]);
     }
 }

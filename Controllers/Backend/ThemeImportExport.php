@@ -29,12 +29,14 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
     }
 
     private function getThemeById($themeId) {
+        if (empty($themeId)) return null;
         $em = $this->get('models');
         $tplRepo = $em->getRepository('Shopware\Models\Shop\Template');
         return  $tplRepo->find($themeId);
     }
 
     private function getShopById($shopId) {
+        if (empty($shopId)) return null;
         $em = $this->get('models');
         $shopRepo = $em->getRepository('Shopware\Models\Shop\Shop');
         return $shopRepo->find($shopId);
@@ -59,7 +61,14 @@ class Shopware_Controllers_Backend_ThemeImportExport extends Shopware_Controller
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $this->Front()->Plugins()->Json()->setRenderer(false);
 
-        $filename = $theme->getTemplate() . '-' . $shop->getName() . '-' . date('Y-m-d-H-i') . '.theme';
+        $config = $this->get('config');
+        $filename = $config->get('themeexport_filename','%1$s-%2$s-%3$s-%4$s.theme');
+        $filename = sprintf($filename,
+            $theme->getTemplate(),
+            $shop->getName(),
+            date('Y-m-d'),
+            date('H-i')
+        );
         $content = serialize($settings);
 
 
