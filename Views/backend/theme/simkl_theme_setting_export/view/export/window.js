@@ -99,7 +99,7 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.view.export.Window', {
             showInput: true,
             checkAmount: true,
             enablePreviewImage: false,
-            dropZoneText: '{s name="ImportFieldsetDropzoneLabel"}Drop a theme configuration for importing{/s}',
+            dropZoneText: '{s name="importFieldsetDropzoneLabel"}Drop a configuration file here to import it{/s}',
             height: 110,
             fileField: 'theme',
             fileInputConfig: {
