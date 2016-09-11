@@ -27,7 +27,7 @@ class ThemeImportConfigurationCommand extends Command {
             ->setDescription('Imports a theme configuration')
             ->addArgument('theme', InputArgument::REQUIRED, 'theme to export', null)
             ->addArgument('shop', InputArgument::REQUIRED, 'subshop', null)
-            ->addOption('file', null, InputOption::VALUE_REQUIRED, 'Subshop', null)
+            ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'read config from file', null)
         ;
     }
 

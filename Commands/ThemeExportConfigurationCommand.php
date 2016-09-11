@@ -27,7 +27,7 @@ class ThemeExportConfigurationCommand extends Command {
             ->setDescription('Outputs a theme configuration')
             ->addArgument('theme', InputArgument::REQUIRED, 'Theme', null)
             ->addArgument('shop', InputArgument::REQUIRED, 'Subshop', null)
-            ->addOption('output', null, InputOption::VALUE_REQUIRED, 'configuration will be written to the given file', null)
+            ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'configuration will be written to the given file', null)
         ;
     }
 
