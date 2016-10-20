@@ -18,7 +18,7 @@ use Shopware\SimklThemeSettingExport\Bootstrap\Installer,
 
 class Shopware_Plugins_Backend_SimklThemeSettingExport_Bootstrap extends Shopware_Components_Plugin_Bootstrap {
 
-    const VERSION = '1.1.0';
+    const VERSION = '1.1.1';
 
     /**
      * {@inheritdoc}
