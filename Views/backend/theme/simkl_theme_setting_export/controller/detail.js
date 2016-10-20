@@ -91,6 +91,9 @@ Ext.define('Shopware.apps.Theme.skwdThemeSettingExport.controller.Detail', {
 
     downloadExport: function(theme,shop) {
         var url = '{url controller="ThemeImportExport" action="export"}?theme=' + theme.getId() + '&shop=' + shop.getId();
+        if (Ext.CSRFService != undefined) {
+            url += '&__csrf_token=' + Ext.CSRFService.getToken();
+        }
         window.location.href=url;
     },
 
