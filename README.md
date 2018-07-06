@@ -4,7 +4,7 @@ This plugin allows you to import or export theme configurations in [Shopware 5](
 ## Installation
 The easiest way to install this plugin is by downloading the latest release. You can upload the .zip file in the Shopware Plugin Manager. ( Configuration > Plugin Manager > Installed > Upload Plugin )
 
-#####[Downloads](https://github.com/simkli/SimklThemeSettingExport/releases)
+###### [Downloads](https://github.com/simkli/SimklThemeSettingExport/releases)
 ### Commandline
 1) Clone this repository into the `/engine/Shopware/Plugins/Community/Backend` directory using the following command:
 ```
